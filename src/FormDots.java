@@ -7,23 +7,27 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
 
-public class FormDots extends JFrame implements Runnable, MouseListener {
+public class FormDots extends JFrame implements Runnable, MouseListener 
+{
 
     private final int w = 1280;
     private final int h = 720;
 
     private BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     private BufferedImage pimg = new BufferedImage(w / 8, h / 8, BufferedImage.TYPE_INT_RGB);
+    
     private int frame = 0;
 
     private NeuralNetwork nn;
 
     public List<Point> points = new ArrayList<>();
 
-    public FormDots() {
+    public FormDots() 
+    {
         UnaryOperator<Double> sigmoid = x -> 1 / (1 + Math.exp(-x));
         UnaryOperator<Double> dsigmoid = y -> y * (1 - y);
-        nn = new NeuralNetwork(0.01, sigmoid, dsigmoid, 2, 5, 5, 2);
+        
+        nn = new NeuralNetwork(0.5, sigmoid, dsigmoid, 2, 40, 2);
 
         this.setSize(w + 16, h + 38);
         this.setVisible(true);
@@ -44,14 +48,22 @@ public class FormDots extends JFrame implements Runnable, MouseListener {
     @Override
     public void paint(Graphics g) {
         if(points.size() > 0) {
-            for (int k = 0; k < 10000; k++) {
+            for (int k = 0; k < 10000; k++) 
+            {
                 Point p = points.get((int) (Math.random() * points.size()));
+                
                 double nx = (double) p.x / w - 0.5;
                 double ny = (double) p.y / h - 0.5;
+                
                 nn.feedForward(new double[]{nx, ny});
+                
                 double[] targets = new double[2];
-                if (p.type == 0) targets[0] = 1;
-                else targets[1] = 1;
+                
+                if (p.type == 0) 
+                	targets[0] = 1;
+                else 
+                	targets[1] = 1;
+                
                 nn.backpropagation(targets);
             }
         }
@@ -82,29 +94,37 @@ public class FormDots extends JFrame implements Runnable, MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) 
+    {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e) 
+    {
         int type = 0;
-        if(e.getButton() == 3) type = 1;
+        
+        if(e.getButton() == 3) 
+        	type = 1;
+        
         points.add(new Point(e.getX() - 16, e.getY() - 38, type));
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) 
+    {
 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e) 
+    {
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent e) 
+    {
 
     }
 }
